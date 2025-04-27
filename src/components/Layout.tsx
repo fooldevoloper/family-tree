@@ -1,6 +1,7 @@
 import { HomeOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
 import { Layout as AntLayout, Menu, Space, Typography } from "antd";
 import { Link } from "react-router-dom";
+import { DownloadButton } from "./DownloadButton";
 
 const { Header, Content, Footer } = AntLayout;
 const { Title } = Typography;
@@ -56,14 +57,32 @@ export function Layout({ children }: LayoutProps) {
           {children}
         </div>
       </Content>
-      <Footer style={{ textAlign: "center", background: "#fff" }}>
-        <Space direction="vertical">
-          <div>Family Tree ©{new Date().getFullYear()} Created with ❤️</div>
+      <Footer
+        style={{
+          textAlign: "center",
+          background: "#fff",
+          padding: "16px 50px",
+          borderTop: "1px solid #f0f0f0",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Space direction="vertical" size="small">
+          <div style={{ color: "#666" }}>
+            Family Tree ©{new Date().getFullYear()} Created with ❤️
+          </div>
           <div>
-            <a href="/privacy">Privacy Policy</a> |{" "}
-            <a href="/terms">Terms of Service</a>
+            <a href="/privacy" style={{ color: "#1890ff" }}>
+              Privacy Policy
+            </a>{" "}
+            |{" "}
+            <a href="/terms" style={{ color: "#1890ff" }}>
+              Terms of Service
+            </a>
           </div>
         </Space>
+        <DownloadButton containerId="family-tree-container" />
       </Footer>
     </AntLayout>
   );

@@ -90,7 +90,10 @@ function FamilyTree() {
       }}
     >
       <Layout>
-        <div style={{ width: "100%", height: "calc(100vh - 64px - 70px)" }}>
+        <div
+          style={{ width: "100%", height: "calc(100vh - 64px - 70px)" }}
+          id="family-tree-container"
+        >
           <ReactFlow
             nodes={nodes}
             edges={edges}
