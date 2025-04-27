@@ -1,22 +1,82 @@
 "use client";
-import { Background, ReactFlow } from "@xyflow/react";
+import {
+  addEdge,
+  applyEdgeChanges,
+  applyNodeChanges,
+  Background,
+  Edge,
+  NodeTypes,
+  OnConnect,
+  OnEdgesChange,
+  OnNodesChange,
+  ReactFlow,
+} from "@xyflow/react";
 import { ConfigProvider, theme } from "antd";
-import { useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
+import FamilyTreeManager from "./components/FamilyTreeManager";
 import { Layout } from "./components/Layout";
-import { extendedEdges, extendedNodes } from "./data/familyData";
-import { ChildNode } from "./nodes/ChildNode";
-import { ParentNode } from "./nodes/ParentNode";
-import { SpouseNode } from "./nodes/SpouseNode";
+import ChildNode from "./nodes/ChildNode";
+import ParentNode from "./nodes/ParentNode";
+import SpouseNode from "./nodes/SpouseNode";
+import useFamilyStore from "./store/familyStore";
+import { FamilyNode } from "./types/family";
+
+const nodeTypes: NodeTypes = {
+  parent: ParentNode,
+  child: ChildNode,
+  spouse: SpouseNode,
+};
 
 function FamilyTree() {
-  const nodeTypes = useMemo(
-    () => ({
-      parentNode: ParentNode,
-      childNode: ChildNode,
-      spouseNode: SpouseNode,
-    }),
-    []
+  const { nodes, edges, setNodes, setEdges } = useFamilyStore();
+
+  useEffect(() => {
+    // Center the default parent node in the view
+    if (nodes.length === 1) {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const centeredX = viewportWidth / 2 - 100; // 100 is half of the node width
+      const centeredY = viewportHeight / 2 - 100; // 100 is half of the node height
+
+      setNodes((nds) =>
+        nds.map((node) =>
+          node.id === "root-parent"
+            ? {
+                ...node,
+                position: { x: centeredX, y: centeredY },
+                data: {
+                  ...node.data,
+                  position: { x: centeredX, y: centeredY },
+                },
+              }
+            : node
+        )
+      );
+    }
+  }, [nodes.length, setNodes]);
+
+  const onNodesChange = useCallback<OnNodesChange>(
+    (changes) => {
+      setNodes(
+        (nds: FamilyNode[]) => applyNodeChanges(changes, nds) as FamilyNode[]
+      );
+    },
+    [setNodes]
+  );
+
+  const onEdgesChange = useCallback<OnEdgesChange>(
+    (changes) => {
+      setEdges((eds: Edge[]) => applyEdgeChanges(changes, eds));
+    },
+    [setEdges]
+  );
+
+  const onConnect = useCallback<OnConnect>(
+    (connection) => {
+      setEdges((eds: Edge[]) => addEdge(connection, eds));
+    },
+    [setEdges]
   );
 
   return (
@@ -32,13 +92,17 @@ function FamilyTree() {
       <Layout>
         <div style={{ width: "100%", height: "calc(100vh - 64px - 70px)" }}>
           <ReactFlow
-            defaultNodes={extendedNodes}
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
             nodeTypes={nodeTypes}
-            defaultEdges={extendedEdges}
             fitView
           >
             <Background />
           </ReactFlow>
+          <FamilyTreeManager />
         </div>
       </Layout>
     </ConfigProvider>
