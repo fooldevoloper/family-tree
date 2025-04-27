@@ -17,6 +17,40 @@ function ChildNode({
   const [isHovered, setIsHovered] = useState(false);
   const { addNode, addEdge, nodes } = useFamilyStore();
 
+  const handleAddSpouse = () => {
+    const newNode = {
+      id: `node-${Date.now()}`,
+      type: "spouse" as const,
+      position: {
+        x: data.position.x + 300,
+        y: data.position.y,
+      },
+      data: {
+        id: `node-${Date.now()}`,
+        name: "Spouse",
+        position: {
+          x: data.position.x + 300,
+          y: data.position.y,
+        },
+        label: "",
+        parentId: data.id,
+        canAddChildren: false,
+        canAddSpouse: false,
+      },
+    };
+
+    addNode(newNode);
+    addEdge({
+      id: `edge-${data.id}-${newNode.id}`,
+      source: data.id,
+      target: newNode.id,
+      type: "straight",
+      sourceHandle: "right",
+      targetHandle: "left",
+      style: { stroke: "#52c41a" },
+    });
+  };
+
   const handleAddChild = () => {
     // Count existing children
     const existingChildren = nodes.filter(
@@ -100,7 +134,38 @@ function ChildNode({
         isConnectable={isConnectable}
         style={{ background: "#52c41a" }}
       />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right"
+        isConnectable={isConnectable}
+        style={{ background: "#52c41a" }}
+      />
       <NodeContent data={data} borderColor="#52c41a" />
+      {isHovered && data.canAddSpouse && (
+        <Button
+          type="primary"
+          shape="circle"
+          icon={<PlusOutlined />}
+          size="small"
+          onClick={handleAddSpouse}
+          style={{
+            position: "absolute",
+            right: "-12px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            zIndex: 1,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            background: "#52c41a",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "24px",
+            height: "24px",
+          }}
+        />
+      )}
       {isHovered && data.canAddChildren && (
         <Button
           type="primary"
