@@ -1,6 +1,9 @@
+import { PlusOutlined } from "@ant-design/icons";
 import { Handle, Position } from "@xyflow/react";
-import { Card } from "antd";
+import { Button, Card } from "antd";
+import { useState } from "react";
 import { NodeContent } from "../components/NodeContent";
+import useFamilyStore from "../store/familyStore";
 import { sharedStyles } from "../styles/sharedStyles";
 import { NodeData } from "../types/family";
 
@@ -11,6 +14,71 @@ function ChildNode({
   data: NodeData;
   isConnectable?: boolean;
 }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const { addNode, addEdge, nodes } = useFamilyStore();
+
+  const handleAddChild = () => {
+    // Count existing children
+    const existingChildren = nodes.filter(
+      (node) => node.type === "child" && node.data.parentId === data.id
+    );
+    const childCount = existingChildren.length;
+
+    // Calculate position for new child
+    const baseX = data.position.x;
+    const baseY = data.position.y + 200;
+    const nodeWidth = 180;
+    const bufferSpace = 100;
+    const spacing = nodeWidth + bufferSpace;
+
+    let newX: number;
+    if (childCount === 0) {
+      // First child - place directly below parent
+      newX = baseX;
+    } else {
+      // Subsequent children - space out from the first child
+      const firstChild = nodes.find(
+        (node) => node.type === "child" && node.data.parentId === data.id
+      );
+      if (firstChild) {
+        // Place new child to the right of the first child with increased spacing
+        newX = firstChild.position.x + childCount * spacing;
+      } else {
+        // Fallback if first child not found
+        newX = baseX + childCount * spacing;
+      }
+    }
+
+    const newNode = {
+      id: `node-${Date.now()}`,
+      type: "child" as const,
+      position: {
+        x: newX,
+        y: baseY,
+      },
+      data: {
+        id: `node-${Date.now()}`,
+        name: "Child",
+        position: {
+          x: newX,
+          y: baseY,
+        },
+        label: "",
+        parentId: data.id,
+        canAddChildren: true,
+        canAddSpouse: true,
+      },
+    };
+
+    addNode(newNode);
+    addEdge({
+      id: `edge-${data.id}-${newNode.id}`,
+      source: data.id,
+      target: newNode.id,
+      type: "smoothstep",
+    });
+  };
+
   return (
     <Card
       className="family-node child-node"
@@ -20,8 +88,11 @@ function ChildNode({
         padding: "8px",
         width: "180px",
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        position: "relative",
       }}
       bodyStyle={{ padding: "8px" }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <Handle
         type="target"
@@ -30,6 +101,30 @@ function ChildNode({
         style={{ background: "#52c41a" }}
       />
       <NodeContent data={data} borderColor="#52c41a" />
+      {isHovered && data.canAddChildren && (
+        <Button
+          type="primary"
+          shape="circle"
+          icon={<PlusOutlined />}
+          size="small"
+          onClick={handleAddChild}
+          style={{
+            position: "absolute",
+            bottom: "-12px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 1,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            background: "#52c41a",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "24px",
+            height: "24px",
+          }}
+        />
+      )}
       <Handle
         type="source"
         position={Position.Bottom}
