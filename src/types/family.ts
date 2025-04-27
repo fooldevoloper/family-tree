@@ -1,21 +1,18 @@
-import {
-  Connection,
-  Edge,
-  EdgeChange,
-  Node,
-  NodeChange,
-  XYPosition,
-} from "@xyflow/react";
+import { Connection, Edge, EdgeChange, Node, NodeChange } from "@xyflow/react";
+
+export type FamilyNodeType = "parent" | "spouse" | "child" | "thread";
 
 export interface NodeData {
   id: string;
   name: string;
-  position: XYPosition;
-  imageUrl?: string | undefined;
-  [key: string]: string | number | boolean | XYPosition | undefined;
+  position: { x: number; y: number };
+  label: string;
+  parentId?: string;
+  imageUrl?: string;
+  canAddChildren?: boolean;
+  canAddSpouse?: boolean;
+  [key: string]: unknown;
 }
-
-export type FamilyNodeType = "parent" | "spouse" | "child";
 
 export interface FamilyNode extends Node {
   type: FamilyNodeType;
@@ -34,7 +31,7 @@ export interface FamilyStore {
 
   // CRUD Operations
   addNode: (node: FamilyNode) => void;
-  updateNode: (nodeId: string, data: NodeData) => void;
+  updateNode: (nodeId: string, data: Partial<NodeData>) => void;
   deleteNode: (nodeId: string) => void;
   addEdge: (edge: Edge) => void;
   deleteEdge: (edgeId: string) => void;
