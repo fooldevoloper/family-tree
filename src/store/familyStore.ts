@@ -9,6 +9,7 @@ const defaultParentNode: FamilyNode = {
     id: "root-parent",
     name: "Root Parent",
     position: { x: 0, y: 0 },
+    label: "",
   },
 };
 

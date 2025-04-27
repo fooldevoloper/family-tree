@@ -1,11 +1,6 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Handle, Position } from "@xyflow/react";
-import { Button, Card } from "antd";
-import { useState } from "react";
-import { NodeContent } from "../components/NodeContent";
 import useFamilyStore from "../store/familyStore";
-import { sharedStyles } from "../styles/sharedStyles";
 import { NodeData } from "../types/family";
+import { RootNode } from "./RootNode";
 
 function ParentNode({
   data,
@@ -14,130 +9,102 @@ function ParentNode({
   data: NodeData;
   isConnectable?: boolean;
 }) {
-  const [isHovered, setIsHovered] = useState(false);
-  const { addNode, addEdge } = useFamilyStore();
+  const { addNode, addEdge, nodes } = useFamilyStore();
 
   const handleAddChild = () => {
+    // Count existing children to determine position
+    const existingChildren = nodes.filter(
+      (node) => node.type === "child" && node.data.parentId === data.id
+    );
+    const childCount = existingChildren.length;
+
+    // Calculate position for new child
+    const baseX = data.position.x;
+    const baseY = data.position.y + 150;
+    const spacing = 300; // Increased spacing between children
+    const offset = (childCount * spacing) / 2; // Center the children
+
     const newNode = {
       id: `node-${Date.now()}`,
       type: "child" as const,
-      position: { x: data.position.x, y: data.position.y + 150 },
+      position: {
+        x: baseX - offset,
+        y: baseY,
+      },
       data: {
         id: `node-${Date.now()}`,
-        name: "",
-        position: { x: data.position.x, y: data.position.y + 150 },
+        name: "Child",
+        position: {
+          x: baseX - offset,
+          y: baseY,
+        },
         label: "",
+        parentId: data.id,
+        canAddChildren: true,
+        canAddSpouse: true,
       },
     };
 
     addNode(newNode);
-    addEdge({
-      id: `edge-${Date.now()}`,
-      source: data.id,
-      target: newNode.id,
-      type: "smoothstep",
-    });
-  };
 
-  const handleAddSpouse = () => {
-    const newNode = {
-      id: `node-${Date.now()}`,
-      type: "spouse" as const,
-      position: { x: data.position.x + 200, y: data.position.y },
-      data: {
-        id: `node-${Date.now()}`,
-        name: "",
-        position: { x: data.position.x + 200, y: data.position.y },
-        label: "",
-      },
-    };
+    if (childCount === 0) {
+      // First child - direct connection
+      addEdge({
+        id: `edge-${Date.now()}`,
+        source: data.id,
+        target: newNode.id,
+        type: "smoothstep",
+      });
+    } else {
+      // Additional children - connect to thread
+      const threadNode = {
+        id: `thread-${data.id}`,
+        type: "thread" as const,
+        position: {
+          x: baseX,
+          y: baseY - 50,
+        },
+        data: {
+          id: `thread-${data.id}`,
+          name: "",
+          position: {
+            x: baseX,
+            y: baseY - 50,
+          },
+          label: "",
+        },
+      };
 
-    addNode(newNode);
-    addEdge({
-      id: `edge-${Date.now()}`,
-      source: data.id,
-      target: newNode.id,
-      type: "smoothstep",
-    });
+      // Add thread node if it doesn't exist
+      if (!nodes.find((n) => n.id === threadNode.id)) {
+        addNode(threadNode);
+        // Connect parent to thread
+        addEdge({
+          id: `edge-${data.id}-thread`,
+          source: data.id,
+          target: threadNode.id,
+          type: "smoothstep",
+        });
+      }
+
+      // Connect child to thread
+      addEdge({
+        id: `edge-${threadNode.id}-${newNode.id}`,
+        source: threadNode.id,
+        target: newNode.id,
+        type: "smoothstep",
+      });
+    }
   };
 
   return (
-    <Card
-      className="family-node parent-node"
-      style={{
-        ...sharedStyles.familyMember,
-        border: "2px solid #1890ff",
-        padding: "8px",
-        width: "180px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-        position: "relative",
-      }}
-      bodyStyle={{ padding: "8px" }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <Handle
-        type="target"
-        position={Position.Top}
-        isConnectable={isConnectable}
-        style={{ background: "#1890ff" }}
-      />
-      {isHovered && (
-        <>
-          <Button
-            type="primary"
-            shape="circle"
-            icon={<PlusOutlined />}
-            size="small"
-            onClick={handleAddChild}
-            style={{
-              position: "absolute",
-              top: "-12px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              zIndex: 1,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-              background: "#1890ff",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "24px",
-              height: "24px",
-            }}
-          />
-          <Button
-            type="primary"
-            shape="circle"
-            icon={<PlusOutlined />}
-            size="small"
-            onClick={handleAddSpouse}
-            style={{
-              position: "absolute",
-              right: "-12px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 1,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-              background: "#1890ff",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "24px",
-              height: "24px",
-            }}
-          />
-        </>
-      )}
-      <NodeContent data={data} borderColor="#1890ff" />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        isConnectable={isConnectable}
-        style={{ background: "#1890ff" }}
-      />
-    </Card>
+    <RootNode
+      data={data}
+      isConnectable={isConnectable}
+      borderColor="#1890ff"
+      onAddChild={handleAddChild}
+      showChildButton={true}
+    />
   );
 }
 
