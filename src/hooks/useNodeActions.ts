@@ -4,7 +4,6 @@ import { NodeData } from "../types/family";
 
 export const useNodeActions = (
   data: NodeData,
-  borderColor: string,
   familyTree?: FamilyTree,
   onAddSpouse?: () => void,
   onAddChild?: () => void

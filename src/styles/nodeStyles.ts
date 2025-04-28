@@ -1,9 +1,8 @@
-import { NodeStyle } from "../types/family";
 
 export const getNodeStyle = (
   isConnection: boolean,
   borderColor: string
-): NodeStyle => ({
+): any => ({
   border: isConnection ? "none" : `2px solid ${borderColor}`,
   padding: isConnection ? "0" : "8px",
   width: isConnection ? "40px" : "180px",
