@@ -14,7 +14,6 @@ import {
 import { ConfigProvider, theme } from "antd";
 import { useCallback, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
-import FamilyTreeManager from "./components/FamilyTreeManager";
 import { Layout } from "./components/Layout";
 import ChildNode from "./nodes/ChildNode";
 import ParentNode from "./nodes/ParentNode";
@@ -105,7 +104,6 @@ function FamilyTree() {
           >
             <Background />
           </ReactFlow>
-          <FamilyTreeManager />
         </div>
       </Layout>
     </ConfigProvider>
