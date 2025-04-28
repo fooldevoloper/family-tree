@@ -20,7 +20,6 @@ import ParentNode from "./nodes/ParentNode";
 import SpouseNode from "./nodes/SpouseNode";
 import useFamilyStore from "./store/familyStore";
 import { FamilyNode } from "./types/family";
-import { Footer } from "./components/Footer";
 
 const nodeTypes: NodeTypes = {
   parent: ParentNode,
@@ -108,7 +107,6 @@ function FamilyTree() {
           </ReactFlow>
         </div>
       </Layout>
-      <Footer />
 
     </ConfigProvider>
   );
