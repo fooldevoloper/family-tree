@@ -109,7 +109,15 @@ function FamilyTree() {
     >
       <Layout>
         <div
-          style={{ width: "100%", height: "calc(100vh - 64px - 70px)" }}
+          style={{ 
+            width: "100%", 
+            height: "100%",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0
+          }}
           id="family-tree-container"
         >
           <ReactFlow
