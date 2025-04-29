@@ -10,9 +10,10 @@ import {
   OnEdgesChange,
   OnNodesChange,
   ReactFlow,
+  ReactFlowInstance,
 } from "@xyflow/react";
 import { ConfigProvider, theme } from "antd";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import ChildNode from "./nodes/ChildNode";
@@ -29,6 +30,7 @@ const nodeTypes: NodeTypes = {
 
 function FamilyTree() {
   const { nodes, edges, setNodes, setEdges } = useFamilyStore();
+  const reactFlowInstance = useRef<ReactFlowInstance<FamilyNode, Edge> | null>(null);
 
   useEffect(() => {
     // Center the default parent node in the view
@@ -55,6 +57,19 @@ function FamilyTree() {
     }
   }, [nodes.length, setNodes]);
 
+  // Add effect to handle automatic zooming and centering
+  useEffect(() => {
+    if (reactFlowInstance.current) {
+      // Add a small delay to ensure the nodes are rendered
+      setTimeout(() => {
+        reactFlowInstance.current?.fitView({
+          padding: 0.2, // Add some padding around the content
+          duration: 800, // Smooth animation duration
+        });
+      }, 100);
+    }
+  }, [nodes, edges]);
+
   const onNodesChange = useCallback<OnNodesChange>(
     (changes) => {
       setNodes(
@@ -78,6 +93,10 @@ function FamilyTree() {
     [setEdges]
   );
 
+  const onInit = useCallback((instance: ReactFlowInstance<FamilyNode, Edge>) => {
+    reactFlowInstance.current = instance;
+  }, []);
+
   return (
     <ConfigProvider
       theme={{
@@ -100,14 +119,13 @@ function FamilyTree() {
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             nodeTypes={nodeTypes}
+            onInit={onInit}
             fitView
           >
             <Background />
-
           </ReactFlow>
         </div>
       </Layout>
-
     </ConfigProvider>
   );
 }
