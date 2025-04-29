@@ -1,4 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { Handle, Position } from "@xyflow/react";
 import { Button, Card } from "antd";
 import { useState } from "react";
@@ -31,7 +31,11 @@ export const RootNode: React.FC<RootNodeProps> = ({
   isSpouse = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const { addNode, addEdge, nodes } = useFamilyStore();
+  const { addNode, addEdge, nodes, deleteNode } = useFamilyStore();
+
+  const handleDelete = () => {
+    deleteNode(data.id);
+  };
 
   const handleAddSpouse = () => {
     if (onAddSpouse) {
@@ -219,30 +223,55 @@ export const RootNode: React.FC<RootNodeProps> = ({
         />
       )}
       <NodeContent data={data} borderColor={borderColor} />
-      {isHovered && showSpouseButton && (
-        <Button
-          type="primary"
-          shape="circle"
-          icon={<PlusOutlined />}
-          size="small"
-          onClick={handleAddSpouse}
-          style={{
-            position: "absolute",
-            right: isSpouse ? "auto" : "-12px",
-            left: isSpouse ? "-12px" : "auto",
-            top: "50%",
-            transform: "translateY(-50%)",
-            zIndex: 1,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            background: borderColor,
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "24px",
-            height: "24px",
-          }}
-        />
+      {isHovered && (
+        <>
+          {showSpouseButton && (
+            <Button
+              type="primary"
+              shape="circle"
+              icon={<PlusOutlined />}
+              size="small"
+              onClick={handleAddSpouse}
+              style={{
+                position: "absolute",
+                right: isSpouse ? "auto" : "-12px",
+                left: isSpouse ? "-12px" : "auto",
+                top: "50%",
+                transform: "translateY(-50%)",
+                zIndex: 1,
+                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                background: borderColor,
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "24px",
+                height: "24px",
+              }}
+            />
+          )}
+          <Button
+            type="primary"
+            shape="circle"
+            icon={<CloseOutlined />}
+            size="small"
+            onClick={handleDelete}
+            style={{
+              position: "absolute",
+              right: "-12px",
+              top: "-12px",
+              zIndex: 1,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              background: "#ff4d4f",
+              border: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "24px",
+              height: "24px",
+            }}
+          />
+        </>
       )}
       {isHovered && showChildButton && (
         <Button
