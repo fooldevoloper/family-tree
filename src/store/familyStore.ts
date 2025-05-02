@@ -61,6 +61,13 @@ const useFamilyStore = create<FamilyStoreState>((set) => ({
 
   addNode: (node) =>
     set((state) => {
+      // If adding a root node and there are existing nodes, clear the state first
+      if (node.type === "parent" && state.nodes.length > 0) {
+        const newState = { nodes: [node], edges: [] };
+        saveState(newState);
+        return newState;
+      }
+      
       const newNodes = [...state.nodes, node];
       const newState = { ...state, nodes: newNodes };
       saveState(newState);
@@ -91,9 +98,23 @@ const useFamilyStore = create<FamilyStoreState>((set) => ({
         return [...childIds, ...grandChildIds];
       };
 
+      // Find connected spouse nodes through edges
+      const findSpouseNodeIds = (nodeId: string): string[] => {
+        const spouseEdges = state.edges.filter(
+          (edge) => 
+            (edge.source === nodeId || edge.target === nodeId) &&
+            edge.type === "straight" // Assuming straight edges are spouse connections
+        );
+        return spouseEdges.map(edge => 
+          edge.source === nodeId ? edge.target : edge.source
+        );
+      };
+
       // Get all child node IDs to delete
       const childNodeIds = findChildNodeIds(nodeId);
-      const allNodeIdsToDelete = [nodeId, ...childNodeIds];
+      // Get all spouse node IDs to delete
+      const spouseNodeIds = findSpouseNodeIds(nodeId);
+      const allNodeIdsToDelete = [nodeId, ...childNodeIds, ...spouseNodeIds];
 
       // Filter out all nodes to be deleted
       const newNodes = state.nodes.filter(

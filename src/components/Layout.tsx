@@ -1,7 +1,8 @@
-import { HomeOutlined, MenuOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
+import { HomeOutlined, MenuOutlined, PlusOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
 import { Layout as AntLayout, Button, Drawer, Menu, Space, Typography } from "antd";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import useFamilyStore from "../store/familyStore";
 import { DownloadButton } from "./DownloadButton";
 
 const { Header, Content, Footer } = AntLayout;
@@ -13,6 +14,28 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
+  const { nodes, addNode } = useFamilyStore();
+
+  const handleAddRootNode = () => {
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const centeredX = viewportWidth / 2 - 100;
+    const centeredY = viewportHeight / 2 - 100;
+
+    addNode({
+      id: `node-${Date.now()}`,
+      type: "parent",
+      position: { x: centeredX, y: centeredY },
+      data: {
+        id: `node-${Date.now()}`,
+        name: "Root Parent",
+        position: { x: centeredX, y: centeredY },
+        label: "",
+        canAddChildren: true,
+        canAddSpouse: true,
+      },
+    });
+  };
 
   const menuItems = [
     {
@@ -97,7 +120,18 @@ export function Layout({ children }: LayoutProps) {
             Family Tree ©{new Date().getFullYear()}
           </div>
         </Space>
-        <DownloadButton containerId="family-tree-container" />
+        <Space>
+          {nodes.length === 0 && (
+            <Button 
+              type="primary" 
+              icon={<PlusOutlined />}
+              onClick={handleAddRootNode}
+            >
+              Add Root Node
+            </Button>
+          )}
+          <DownloadButton containerId="family-tree-container" />
+        </Space>
         <div className="footer-links">
           <a href="/privacy" style={{ color: "#1890ff" }}>
             Privacy Policy
