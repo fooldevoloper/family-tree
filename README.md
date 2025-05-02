@@ -1,17 +1,37 @@
-# Family Tree Visualization
+# Family Tree
 
-A modern, interactive family tree visualization application built with React, TypeScript, and React Flow. This application allows users to create, edit, and visualize family relationships in an intuitive way.
+A modern family tree visualization application built with React and TypeScript.
 
 ## Features
 
-- 🎨 Interactive family tree visualization
-- 👥 Support for multiple node types (parent, spouse, child)
-- 📱 Responsive design for all screen sizes
-- 💾 Import/Export functionality
-- 📥 Download family tree as PNG, JPEG, or PDF
-- 🎯 Drag-and-drop interface
-- 🔄 Real-time updates
-- 🎨 Customizable node styling
+- Interactive family tree visualization
+- Add, edit, and remove family members
+- Connect family members with relationships
+- Export and import family tree data
+- Modern UI with Ant Design components
+
+## Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
+
+# Build for production
+pnpm build
+
+# Run linting
+pnpm lint
+
+# Format code
+pnpm format
+```
+
+## Author
+
+asmend
 
 ## Project Structure
 
