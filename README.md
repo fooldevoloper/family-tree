@@ -1,54 +1,149 @@
-![](https://github.com/xyflow/web/blob/main/assets/codesandbox-header-ts.png?raw=true)
+# Family Tree Visualization
 
-# React Flow starter (Vite + TS)
+A modern, interactive family tree visualization application built with React, TypeScript, and React Flow. This application allows users to create, edit, and visualize family relationships in an intuitive way.
 
-We've put together this template to serve as a starting point for folks
-interested in React Flow. You can use this both as a base for your own React
-Flow applications, or for small experiments or bug reports.
+## Features
 
-**TypeScript not your thing?** We also have a vanilla JavaScript starter template,
-just for you!
+- 🎨 Interactive family tree visualization
+- 👥 Support for multiple node types (parent, spouse, child)
+- 📱 Responsive design for all screen sizes
+- 💾 Import/Export functionality
+- 📥 Download family tree as PNG, JPEG, or PDF
+- 🎯 Drag-and-drop interface
+- 🔄 Real-time updates
+- 🎨 Customizable node styling
 
-## Getting up and running
+## Project Structure
 
-You can get this template without forking/cloning the repo using `degit`:
-
-```bash
-npx degit xyflow/vite-react-flow-template your-app-name
+```
+src/
+├── components/         # Reusable UI components
+│   ├── DownloadButton.tsx
+│   ├── ImportButton.tsx
+│   ├── Layout.tsx
+│   ├── NodeContent.tsx
+│   └── sharedStyles.ts
+├── nodes/             # Custom node components
+│   ├── ChildNode.tsx
+│   ├── ParentNode.tsx
+│   └── SpouseNode.tsx
+├── store/             # State management
+│   └── familyStore.ts
+├── types/             # TypeScript type definitions
+│   └── family.ts
+├── styles/            # Global styles
+│   └── sharedStyles.ts
+└── App.tsx            # Main application component
 ```
 
-The template contains mostly the minimum dependencies to get up and running, but
-also includes eslint and some additional rules to help you write React code that
-is less likely to run into issues:
+## Design Patterns
 
-```bash
-npm install # or `pnpm install` or `yarn install`
+### 1. State Management
+- **Zustand Store**: Centralized state management using Zustand
+- **Immutability**: All state updates are handled immutably
+- **Type Safety**: Full TypeScript support for state management
+
+### 2. Component Architecture
+- **Container/Presenter Pattern**: Separation of logic and presentation
+- **Compound Components**: Reusable component patterns
+- **Custom Hooks**: Encapsulated business logic
+
+### 3. Data Flow
+- **Unidirectional Data Flow**: Predictable state updates
+- **Event-Driven Architecture**: User interactions trigger state changes
+- **Type-Safe Props**: Strict typing for component props
+
+## Key Components
+
+### 1. Node Types
+- **ParentNode**: Root nodes of the family tree
+- **SpouseNode**: Spouse connections
+- **ChildNode**: Child nodes with parent relationships
+
+### 2. Store Actions
+```typescript
+interface FamilyStore {
+  // CRUD Operations
+  addNode: (node: FamilyNode) => void;
+  updateNode: (nodeId: string, data: Partial<NodeData>) => void;
+  deleteNode: (nodeId: string) => void;
+  addEdge: (edge: Edge) => void;
+  deleteEdge: (edgeId: string) => void;
+  
+  // Import/Export
+  importJson: (jsonData: string | { nodes: FamilyNode[]; edges: Edge[] }) => void;
+}
 ```
 
-Vite is a great development server and build tool that we recommend our users to
-use. You can start a development server with:
+### 3. Node Data Structure
+```typescript
+interface NodeData {
+  id: string;
+  name: string;
+  position: { x: number; y: number };
+  label: string;
+  parentId?: string;
+  imageUrl?: string;
+  canAddChildren?: boolean;
+  canAddSpouse?: boolean;
+}
+```
 
+## Getting Started
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Installation
 ```bash
+# Clone the repository
+git clone [repository-url]
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
 ```
 
-While the development server is running, changes you make to the code will be
-automatically reflected in the browser!
+### Building for Production
+```bash
+npm run build
+```
 
-## Things to try:
+## Development Guidelines
 
-- Create a new custom node inside `src/nodes/` (don't forget to export it from `src/nodes/index.ts`).
-- Change how things look by [overriding some of the built-in classes](https://reactflow.dev/learn/customization/theming#overriding-built-in-classes).
-- Add a layouting library to [position your nodes automatically](https://reactflow.dev/learn/layouting/layouting)
+### Code Style
+- Follow TypeScript best practices
+- Use functional components with hooks
+- Maintain consistent naming conventions
+- Document complex logic with comments
 
-## Resources
+### Testing
+- Write unit tests for business logic
+- Test component interactions
+- Ensure type safety
 
-Links:
+### Performance
+- Optimize re-renders with React.memo
+- Use proper dependency arrays in hooks
+- Implement lazy loading where appropriate
 
-- [React Flow - Docs](https://reactflow.dev)
-- [React Flow - Discord](https://discord.com/invite/Bqt6xrs)
+## Contributing
 
-Learn:
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-- [React Flow – Custom Nodes](https://reactflow.dev/learn/customization/custom-nodes)
-- [React Flow – Layouting](https://reactflow.dev/learn/layouting/layouting)
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [React Flow](https://reactflow.dev/) for the visualization library
+- [Ant Design](https://ant.design/) for UI components
+- [Zustand](https://github.com/pmndrs/zustand) for state management
