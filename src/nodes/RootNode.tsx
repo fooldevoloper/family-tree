@@ -1,6 +1,6 @@
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { Handle, Position } from "@xyflow/react";
-import { Button, Card } from "antd";
+import { Button, Card, Tooltip } from "antd";
 import { useState } from "react";
 import { NodeContent } from "../components/NodeContent";
 import useFamilyStore from "../store/familyStore";
@@ -19,6 +19,68 @@ interface RootNodeProps {
   isSpouse?: boolean;
 }
 
+interface NodeActionButtonProps {
+  icon: React.ReactNode;
+  onClick: () => void;
+  position: "top" | "right" | "bottom" | "left";
+  tooltip: string;
+  color?: string;
+  loading?: boolean;
+}
+
+const NodeActionButton: React.FC<NodeActionButtonProps> = ({
+  icon,
+  onClick,
+  position,
+  tooltip,
+  color = "#1890ff",
+  loading = false,
+}) => {
+  const getPositionStyle = () => {
+    switch (position) {
+      case "top":
+        return { top: "-12px", left: "50%", transform: "translateX(-50%)" };
+      case "right":
+        return { right: "-12px", top: "50%", transform: "translateY(-50%)" };
+      case "bottom":
+        return { bottom: "-12px", left: "50%", transform: "translateX(-50%)" };
+      case "left":
+        return { left: "-12px", top: "50%", transform: "translateY(-50%)" };
+      default:
+        return {};
+    }
+  };
+
+  return (
+    <Tooltip title={loading ? "Processing..." : tooltip}>
+      <Button
+        type="primary"
+        shape="circle"
+        icon={icon}
+        size="small"
+        onClick={onClick}
+        loading={loading}
+        disabled={loading}
+        style={{
+          position: "absolute",
+          ...getPositionStyle(),
+          zIndex: 1,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+          background: color,
+          border: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "24px",
+          height: "24px",
+          cursor: loading ? "not-allowed" : "pointer",
+          opacity: loading ? 0.7 : 1,
+        }}
+      />
+    </Tooltip>
+  );
+};
+
 export const RootNode: React.FC<RootNodeProps> = ({
   data,
   isConnectable,
@@ -31,155 +93,164 @@ export const RootNode: React.FC<RootNodeProps> = ({
   isSpouse = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { addNode, addEdge, nodes, deleteNode } = useFamilyStore();
 
-  const handleDelete = () => {
-    deleteNode(data.id);
+  const handleDelete = async () => {
+    try {
+      setIsLoading(true);
+      await deleteNode(data.id);
+    } catch (error) {
+      console.error("Error deleting node:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleAddSpouse = () => {
+  const handleAddSpouse = async () => {
     if (onAddSpouse) {
       onAddSpouse();
       return;
     }
 
-    const newNode = {
-      id: `node-${Date.now()}`,
-      type: "spouse" as const,
-      position: {
-        x: data.position.x + 300,
-        y: data.position.y,
-      },
-      data: {
+    try {
+      setIsLoading(true);
+      const newNode = {
         id: `node-${Date.now()}`,
-        name: "Spouse",
+        type: "spouse" as const,
         position: {
           x: data.position.x + 300,
           y: data.position.y,
         },
-        label: "",
-        canAddChildren: true,
-        canAddSpouse: true,
-      },
-    };
+        data: {
+          id: `node-${Date.now()}`,
+          name: "Spouse",
+          position: {
+            x: data.position.x + 300,
+            y: data.position.y,
+          },
+          label: "",
+          canAddChildren: true,
+          canAddSpouse: true,
+        },
+      };
 
-    addNode(newNode);
-    addEdge({
-      id: `edge-${Date.now()}`,
-      source: data.id,
-      target: newNode.id,
-      type: "straight",
-      sourceHandle: isSpouse ? "left" : "right",
-      targetHandle: isSpouse ? "right" : "left",
-    });
+      await addNode(newNode);
+      await addEdge({
+        id: `edge-${Date.now()}`,
+        source: data.id,
+        target: newNode.id,
+        type: "straight",
+        sourceHandle: isSpouse ? "left" : "right",
+        targetHandle: isSpouse ? "right" : "left",
+      });
+    } catch (error) {
+      console.error("Error adding spouse:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleAddChild = () => {
+  const handleAddChild = async () => {
     if (onAddChild) {
       onAddChild();
       return;
     }
 
-    // Find the spouse node if it exists
-    const spouseNode = nodes.find(
-      (node) => node.type === "spouse" && node.data.parentId === data.id
-    );
+    try {
+      setIsLoading(true);
+      const spouseNode = nodes.find(
+        (node) => node.type === "spouse" && node.data.parentId === data.id
+      );
+      const existingChildren = nodes.filter(
+        (node) => node.type === "child" && node.data.parentId === data.id
+      );
+      
+      const childCount = existingChildren.length;
 
-    // Count existing children
-    const existingChildren = nodes.filter(
-      (node) => node.type === "child" && node.data.parentId === data.id
-    );
-    const childCount = existingChildren.length;
+      let baseX = data.position.x;
+      const baseY = data.position.y + 200;
 
-    // Calculate base position
-    let baseX = data.position.x;
-    const baseY = data.position.y + 200; // Increased vertical distance from parent
+      if (spouseNode) {
+        baseX = (data.position.x + spouseNode.position.x) / 2;
+      }
 
-    // If there's a spouse, calculate the middle point between parents
-    if (spouseNode) {
-      baseX = (data.position.x + spouseNode.position.x) / 2;
-    }
+      const spacing = 250;
+      const totalWidth = spacing * (childCount + 1);
+      const startX = baseX - totalWidth / 2;
 
-    // Calculate spacing and offset for multiple children
-    const spacing = 250; // Increased horizontal spacing between children
-    const totalWidth = spacing * (childCount + 1); // Include new child in total width
-    const startX = baseX - totalWidth / 2;
-
-    const newNode = {
-      id: `node-${Date.now()}`,
-      type: "child" as const,
-      position: {
-        x: startX + childCount * spacing,
-        y: baseY,
-      },
-      data: {
+      const newNode = {
         id: `node-${Date.now()}`,
-        name: "Child",
+        type: "child" as const,
         position: {
           x: startX + childCount * spacing,
           y: baseY,
         },
-        label: "",
-        parentId: data.id,
-        canAddChildren: true,
-        canAddSpouse: true,
-      },
-    };
+        data: {
+          id: `node-${Date.now()}`,
+          name: "Child",
+          position: {
+            x: startX + childCount * spacing,
+            y: baseY,
+          },
+          label: "",
+          parentId: data.id,
+          canAddChildren: true,
+          canAddSpouse: true,
+        },
+      };
 
-    addNode(newNode);
+      await addNode(newNode);
 
-    if (childCount === 0) {
-      // First child - connect to both parents if spouse exists
-      if (spouseNode) {
-        // Connect to first parent
-        addEdge({
-          id: `edge-${data.id}-${newNode.id}`,
-          source: data.id,
-          target: newNode.id,
-          type: "smoothstep",
-        });
-        // Connect to spouse
-        addEdge({
-          id: `edge-${spouseNode.id}-${newNode.id}`,
-          source: spouseNode.id,
-          target: newNode.id,
-          type: "smoothstep",
-        });
+      if (childCount === 0) {
+        if (spouseNode) {
+          await addEdge({
+            id: `edge-${data.id}-${newNode.id}`,
+            source: data.id,
+            target: newNode.id,
+            type: "smoothstep",
+          });
+          await addEdge({
+            id: `edge-${spouseNode.id}-${newNode.id}`,
+            source: spouseNode.id,
+            target: newNode.id,
+            type: "smoothstep",
+          });
+        } else {
+          await addEdge({
+            id: `edge-${Date.now()}`,
+            source: data.id,
+            target: newNode.id,
+            type: "smoothstep",
+          });
+        }
       } else {
-        // Only one parent - direct connection
-        addEdge({
-          id: `edge-${Date.now()}`,
-          source: data.id,
-          target: newNode.id,
-          type: "smoothstep",
-        });
+        if (spouseNode) {
+          await addEdge({
+            id: `edge-${data.id}-${newNode.id}`,
+            source: data.id,
+            target: newNode.id,
+            type: "smoothstep",
+          });
+          await addEdge({
+            id: `edge-${spouseNode.id}-${newNode.id}`,
+            source: spouseNode.id,
+            target: newNode.id,
+            type: "smoothstep",
+          });
+        } else {
+          await addEdge({
+            id: `edge-${Date.now()}`,
+            source: data.id,
+            target: newNode.id,
+            type: "smoothstep",
+          });
+        }
       }
-    } else {
-      // For additional children, connect directly to parents
-      if (spouseNode) {
-        // Connect to first parent
-        addEdge({
-          id: `edge-${data.id}-${newNode.id}`,
-          source: data.id,
-          target: newNode.id,
-          type: "smoothstep",
-        });
-        // Connect to spouse
-        addEdge({
-          id: `edge-${spouseNode.id}-${newNode.id}`,
-          source: spouseNode.id,
-          target: newNode.id,
-          type: "smoothstep",
-        });
-      } else {
-        // Only one parent - direct connection
-        addEdge({
-          id: `edge-${Date.now()}`,
-          source: data.id,
-          target: newNode.id,
-          type: "smoothstep",
-        });
-      }
+    } catch (error) {
+      console.error("Error adding child:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -193,10 +264,13 @@ export const RootNode: React.FC<RootNodeProps> = ({
         width: "180px",
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
         position: "relative",
+        transition: "all 0.3s ease",
       }}
       bodyStyle={{ padding: "8px" }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      role="treeitem"
+      aria-label={`Family member: ${data.name}`}
     >
       <Handle
         type="target"
@@ -226,78 +300,33 @@ export const RootNode: React.FC<RootNodeProps> = ({
       {isHovered && (
         <>
           {showSpouseButton && (
-            <Button
-              type="primary"
-              shape="circle"
+            <NodeActionButton
               icon={<PlusOutlined />}
-              size="small"
               onClick={handleAddSpouse}
-              style={{
-                position: "absolute",
-                right: isSpouse ? "auto" : "-12px",
-                left: isSpouse ? "-12px" : "auto",
-                top: "50%",
-                transform: "translateY(-50%)",
-                zIndex: 1,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                background: borderColor,
-                border: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "24px",
-                height: "24px",
-                cursor: "pointer",
-              }}
+              position={isSpouse ? "left" : "right"}
+              tooltip="Add Spouse"
+              color={borderColor}
+              loading={isLoading}
             />
           )}
-          <Button
-            type="primary"
-            shape="circle"
+          <NodeActionButton
             icon={<CloseOutlined />}
-            size="small"
             onClick={handleDelete}
-            style={{
-              position: "absolute",
-              right: "-12px",
-              top: "-12px",
-              zIndex: 1,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-              background: "#ff4d4f",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "24px",
-              height: "24px",
-              cursor: "pointer",
-            }}
+            position="top"
+            tooltip="Delete"
+            color="#ff4d4f"
+            loading={isLoading}
           />
         </>
       )}
       {isHovered && showChildButton && (
-        <Button
-          type="primary"
-          shape="circle"
+        <NodeActionButton
           icon={<PlusOutlined />}
-          size="small"
           onClick={handleAddChild}
-          style={{
-            position: "absolute",
-            bottom: "-12px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            zIndex: 1,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            background: borderColor,
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "24px",
-            height: "24px",
-            cursor: "pointer",
-          }}
+          position="bottom"
+          tooltip="Add Child"
+          color={borderColor}
+          loading={isLoading}
         />
       )}
       {children}
