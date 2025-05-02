@@ -247,6 +247,7 @@ export const RootNode: React.FC<RootNodeProps> = ({
                 justifyContent: "center",
                 width: "24px",
                 height: "24px",
+                cursor: "pointer",
               }}
             />
           )}
@@ -269,6 +270,7 @@ export const RootNode: React.FC<RootNodeProps> = ({
               justifyContent: "center",
               width: "24px",
               height: "24px",
+              cursor: "pointer",
             }}
           />
         </>
@@ -294,6 +296,7 @@ export const RootNode: React.FC<RootNodeProps> = ({
             justifyContent: "center",
             width: "24px",
             height: "24px",
+            cursor: "pointer",
           }}
         />
       )}
