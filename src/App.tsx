@@ -129,6 +129,10 @@ function FamilyTree() {
             nodeTypes={nodeTypes}
             onInit={onInit}
             fitView
+            defaultEdgeOptions={{
+              style: { stroke: '#52c41a' },
+              animated: true
+            }}
           >
             <Background />
           </ReactFlow>
