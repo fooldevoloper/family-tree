@@ -1,5 +1,6 @@
-import { HomeOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
-import { Layout as AntLayout, Menu, Space, Typography } from "antd";
+import { HomeOutlined, MenuOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
+import { Layout as AntLayout, Button, Drawer, Menu, Space, Typography } from "antd";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DownloadButton } from "./DownloadButton";
 
@@ -11,21 +12,23 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
+  const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
+
   const menuItems = [
     {
       key: "home",
       icon: <HomeOutlined />,
-      label: <Link to="/">Home</Link>,
+      label: <Link to="/" onClick={() => setMobileMenuVisible(false)}>Home</Link>,
     },
     {
       key: "family",
       icon: <TeamOutlined />,
-      label: <Link to="/family">Family</Link>,
+      label: <Link to="/family" onClick={() => setMobileMenuVisible(false)}>Family</Link>,
     },
     {
       key: "profile",
       icon: <UserOutlined />,
-      label: <Link to="/profile">Profile</Link>,
+      label: <Link to="/profile" onClick={() => setMobileMenuVisible(false)}>Profile</Link>,
     },
   ];
 
@@ -37,21 +40,31 @@ export function Layout({ children }: LayoutProps) {
           zIndex: 1,
           width: "100%",
           background: "#fff",
+          padding: "0 20px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
-          <Title level={3} style={{ margin: 0, marginRight: "24px" }}>
+        <div style={{ display: "flex", alignItems: "center", height: "100%", justifyContent: "space-between" }}>
+          <Title level={3} style={{ margin: 0 }}>
             Family Tree
           </Title>
-          <Menu
-            mode="horizontal"
-            defaultSelectedKeys={["home"]}
-            items={menuItems}
+          <div className="desktop-menu">
+            <Menu
+              mode="horizontal"
+              defaultSelectedKeys={["home"]}
+              items={menuItems}
+            />
+          </div>
+          <Button
+            className="mobile-menu-button"
+            type="text"
+            icon={<MenuOutlined />}
+            onClick={() => setMobileMenuVisible(true)}
+            style={{ display: "none" }}
           />
         </div>
       </Header>
       <Content style={{ 
-        padding: "0 50px", 
+        padding: "0 20px", 
         marginTop: 64,
         marginBottom: 70,
         flex: "1 0 auto",
@@ -67,7 +80,7 @@ export function Layout({ children }: LayoutProps) {
         style={{
           textAlign: "center",
           background: "#fff",
-          padding: "16px 50px",
+          padding: "16px 20px",
           borderTop: "1px solid #f0f0f0",
           display: "flex",
           justifyContent: "space-between",
@@ -82,20 +95,10 @@ export function Layout({ children }: LayoutProps) {
         <Space direction="vertical" size="small">
           <div style={{ color: "#666" }}>
             Family Tree ©{new Date().getFullYear()}
-             {/* Created by{" "} */}
-            <a
-              href="https://github.com/fooldevoloper/"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#1890ff" }}
-            >
-              {/* Balkrishna Pokharel */}
-            </a>{" "}
-            {/* with ❤️ */}
           </div>
         </Space>
         <DownloadButton containerId="family-tree-container" />
-        <div>
+        <div className="footer-links">
           <a href="/privacy" style={{ color: "#1890ff" }}>
             Privacy Policy
           </a>{" "}
@@ -105,6 +108,57 @@ export function Layout({ children }: LayoutProps) {
           </a>
         </div>
       </Footer>
+
+      <Drawer
+        title="Menu"
+        placement="right"
+        onClose={() => setMobileMenuVisible(false)}
+        open={mobileMenuVisible}
+        width={250}
+      >
+        <Menu
+          mode="vertical"
+          defaultSelectedKeys={["home"]}
+          items={menuItems}
+          style={{ border: "none" }}
+        />
+      </Drawer>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .desktop-menu {
+            display: none;
+          }
+          .mobile-menu-button {
+            display: block !important;
+          }
+          .footer-links {
+            display: none;
+          }
+          .ant-layout-header {
+            padding: 0 16px !important;
+          }
+          .ant-layout-content {
+            padding: 0 16px !important;
+          }
+          .ant-layout-footer {
+            padding: 16px !important;
+            flex-direction: column;
+            gap: 16px;
+          }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+          .ant-layout-header {
+            padding: 0 24px !important;
+          }
+          .ant-layout-content {
+            padding: 0 24px !important;
+          }
+          .ant-layout-footer {
+            padding: 16px 24px !important;
+          }
+        }
+      `}</style>
     </AntLayout>
   );
 }
