@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import useFamilyStore from "../store/familyStore";
 import { DownloadButton } from "./DownloadButton";
+import { ImportButton } from "./ImportButton";
 
 const { Header, Content, Footer } = AntLayout;
 const { Title } = Typography;
@@ -130,6 +131,7 @@ export function Layout({ children }: LayoutProps) {
               Add Root Node
             </Button>
           )}
+          <ImportButton />
           <DownloadButton containerId="family-tree-container" />
         </Space>
         <div className="footer-links">

@@ -1,5 +1,6 @@
+import { Edge } from "@xyflow/react";
 import { create } from "zustand";
-import { FamilyStoreState } from "../types/family";
+import { FamilyNode, FamilyStoreState } from "../types/family";
 
 const useFamilyStore = create<FamilyStoreState>((set) => ({
   nodes: [],
@@ -93,6 +94,20 @@ const useFamilyStore = create<FamilyStoreState>((set) => ({
     set((state) => {
       const newEdges = state.edges.filter((edge) => edge.id !== edgeId);
       return { edges: newEdges };
+    }),
+
+  importJson: (jsonData: string | { nodes: FamilyNode[]; edges: Edge[] }) =>
+    set((state) => {
+      try {
+        const data = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
+        if (!data.nodes || !data.edges) {
+          throw new Error('Invalid JSON format: missing nodes or edges');
+        }
+        return { nodes: data.nodes, edges: data.edges };
+      } catch (error) {
+        console.error('Error importing JSON:', error);
+        return state;
+      }
     }),
 }));
 

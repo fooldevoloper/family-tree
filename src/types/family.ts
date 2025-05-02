@@ -35,6 +35,9 @@ export interface FamilyStore {
   deleteNode: (nodeId: string) => void;
   addEdge: (edge: Edge) => void;
   deleteEdge: (edgeId: string) => void;
+  
+  // Import/Export Operations
+  importJson: (jsonData: string | { nodes: FamilyNode[]; edges: Edge[] }) => void;
 }
 
 export type FamilyStoreState = FamilyStore;
