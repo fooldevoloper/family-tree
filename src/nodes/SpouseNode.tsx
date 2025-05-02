@@ -1,13 +1,7 @@
-import { NodeData } from "../types/family";
-import { RootNode } from "./RootNode";
+import { NodeData } from '../types/family';
+import { RootNode } from './RootNode';
 
-function SpouseNode({
-  data,
-  isConnectable,
-}: {
-  data: NodeData;
-  isConnectable?: boolean;
-}) {
+function SpouseNode({ data, isConnectable }: { data: NodeData; isConnectable?: boolean }) {
   return (
     <RootNode
       data={data}

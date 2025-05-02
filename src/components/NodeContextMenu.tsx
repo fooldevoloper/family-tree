@@ -1,7 +1,7 @@
-import { Menu } from "antd";
-import { useCallback } from "react";
-import useFamilyStore from "../store/familyStore";
-import { FamilyNode } from "../types/family";
+import { Menu } from 'antd';
+import { useCallback } from 'react';
+import useFamilyStore from '../store/familyStore';
+import { FamilyNode } from '../types/family';
 
 interface NodeContextMenuProps {
   node: FamilyNode;
@@ -12,7 +12,7 @@ export function NodeContextMenu({ node, onClose }: NodeContextMenuProps) {
   const { addNode } = useFamilyStore();
 
   const handleAddMember = useCallback(
-    (type: "parent" | "spouse" | "child") => {
+    (type: 'parent' | 'spouse' | 'child') => {
       const position = calculateNodePosition(type, node);
       const newNode: FamilyNode = {
         id: `node-${Date.now()}`,
@@ -20,9 +20,9 @@ export function NodeContextMenu({ node, onClose }: NodeContextMenuProps) {
         position,
         data: {
           id: `node-${Date.now()}`,
-          name: "",
+          name: '',
           position,
-          label: "",
+          label: '',
         },
       };
 
@@ -35,11 +35,11 @@ export function NodeContextMenu({ node, onClose }: NodeContextMenuProps) {
   const calculateNodePosition = (type: string, selectedNode: FamilyNode) => {
     const basePosition = selectedNode.position;
     switch (type) {
-      case "spouse":
+      case 'spouse':
         return { x: basePosition.x + 200, y: basePosition.y };
-      case "child":
+      case 'child':
         return { x: basePosition.x, y: basePosition.y + 150 };
-      case "parent":
+      case 'parent':
         return { x: basePosition.x, y: basePosition.y - 150 };
       default:
         return basePosition;
@@ -48,13 +48,13 @@ export function NodeContextMenu({ node, onClose }: NodeContextMenuProps) {
 
   return (
     <Menu>
-      <Menu.Item key="add-parent" onClick={() => handleAddMember("parent")}>
+      <Menu.Item key="add-parent" onClick={() => handleAddMember('parent')}>
         Add Parent
       </Menu.Item>
-      <Menu.Item key="add-spouse" onClick={() => handleAddMember("spouse")}>
+      <Menu.Item key="add-spouse" onClick={() => handleAddMember('spouse')}>
         Add Spouse
       </Menu.Item>
-      <Menu.Item key="add-child" onClick={() => handleAddMember("child")}>
+      <Menu.Item key="add-child" onClick={() => handleAddMember('child')}>
         Add Child
       </Menu.Item>
     </Menu>

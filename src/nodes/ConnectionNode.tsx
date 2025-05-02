@@ -1,7 +1,7 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Handle, Position } from "@xyflow/react";
-import { Button } from "antd";
-import { useState } from "react";
+import { PlusOutlined } from '@ant-design/icons';
+import { Handle, Position } from '@xyflow/react';
+import { Button } from 'antd';
+import { useState } from 'react';
 
 interface ConnectionNodeData {
   id: string;
@@ -22,7 +22,7 @@ export const ConnectionNode = ({
   isConnectable?: boolean;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const borderColor = "#1890ff";
+  const borderColor = '#1890ff';
 
   const handleAddChild = () => {
     if (data.onAddChild) {
@@ -33,9 +33,9 @@ export const ConnectionNode = ({
   return (
     <div
       style={{
-        position: "relative",
-        width: "0",
-        height: "0",
+        position: 'relative',
+        width: '0',
+        height: '0',
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -60,19 +60,19 @@ export const ConnectionNode = ({
           size="small"
           onClick={handleAddChild}
           style={{
-            position: "absolute",
-            bottom: "-12px",
-            left: "50%",
-            transform: "translateX(-50%)",
+            position: 'absolute',
+            bottom: '-12px',
+            left: '50%',
+            transform: 'translateX(-50%)',
             zIndex: 1,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
             background: borderColor,
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "24px",
-            height: "24px",
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '24px',
+            height: '24px',
           }}
         />
       )}

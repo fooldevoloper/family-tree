@@ -1,5 +1,5 @@
-import useFamilyStore from "../store/familyStore";
-import { FamilyNode } from "../types/family";
+import useFamilyStore from '../store/familyStore';
+import { FamilyNode } from '../types/family';
 
 interface RootNodeProps {
   id: string;
@@ -16,14 +16,14 @@ const RootNode = ({ id, data }: RootNodeProps) => {
     const childId = `child-${Date.now()}`;
     const childNode: FamilyNode = {
       id: childId,
-      type: "child",
+      type: 'child',
       position: { x: 0, y: 100 },
       data: {
         id: childId,
-        name: "Child",
+        name: 'Child',
         position: { x: 0, y: 100 },
         parentId: id,
-        label: "",
+        label: '',
       },
     };
 
@@ -31,9 +31,9 @@ const RootNode = ({ id, data }: RootNodeProps) => {
       id: `edge-${id}-${childId}`,
       source: id,
       target: childId,
-      type: "smoothstep",
-      sourceHandle: "bottom",
-      targetHandle: "top",
+      type: 'smoothstep',
+      sourceHandle: 'bottom',
+      targetHandle: 'top',
     };
 
     addNode(childNode);
@@ -44,14 +44,14 @@ const RootNode = ({ id, data }: RootNodeProps) => {
     const spouseId = `spouse-${Date.now()}`;
     const spouseNode: FamilyNode = {
       id: spouseId,
-      type: "spouse",
+      type: 'spouse',
       position: { x: 100, y: 0 },
       data: {
         id: spouseId,
-        name: "Spouse",
+        name: 'Spouse',
         position: { x: 100, y: 0 },
         parentId: id,
-        label: "",
+        label: '',
       },
     };
 
@@ -59,9 +59,9 @@ const RootNode = ({ id, data }: RootNodeProps) => {
       id: `edge-${id}-${spouseId}`,
       source: id,
       target: spouseId,
-      type: "straight",
-      sourceHandle: "right",
-      targetHandle: "left",
+      type: 'straight',
+      sourceHandle: 'right',
+      targetHandle: 'left',
     };
 
     addNode(spouseNode);
@@ -82,4 +82,4 @@ const RootNode = ({ id, data }: RootNodeProps) => {
   );
 };
 
-export default RootNode; 
+export default RootNode;

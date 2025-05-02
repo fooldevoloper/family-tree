@@ -1,10 +1,16 @@
-import { HomeOutlined, MenuOutlined, PlusOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
-import { Layout as AntLayout, Button, Drawer, Menu, Space, Typography } from "antd";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import useFamilyStore from "../store/familyStore";
-import { DownloadButton } from "./DownloadButton";
-import { ImportButton } from "./ImportButton";
+import {
+  HomeOutlined,
+  MenuOutlined,
+  PlusOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+import { Layout as AntLayout, Button, Drawer, Menu, Space, Typography } from 'antd';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import useFamilyStore from '../store/familyStore';
+import { DownloadButton } from './DownloadButton';
+import { ImportButton } from './ImportButton';
 
 const { Header, Content, Footer } = AntLayout;
 const { Title } = Typography;
@@ -25,13 +31,13 @@ export function Layout({ children }: LayoutProps) {
 
     addNode({
       id: `node-${Date.now()}`,
-      type: "parent",
+      type: 'parent',
       position: { x: centeredX, y: centeredY },
       data: {
         id: `node-${Date.now()}`,
-        name: "Root Parent",
+        name: 'Root Parent',
         position: { x: centeredX, y: centeredY },
-        label: "",
+        label: '',
         canAddChildren: true,
         canAddSpouse: true,
       },
@@ -40,94 +46,103 @@ export function Layout({ children }: LayoutProps) {
 
   const menuItems = [
     {
-      key: "home",
+      key: 'home',
       icon: <HomeOutlined />,
-      label: <Link to="/" onClick={() => setMobileMenuVisible(false)}>Home</Link>,
+      label: (
+        <Link to="/" onClick={() => setMobileMenuVisible(false)}>
+          Home
+        </Link>
+      ),
     },
     {
-      key: "family",
+      key: 'family',
       icon: <TeamOutlined />,
-      label: <Link to="/family" onClick={() => setMobileMenuVisible(false)}>Family</Link>,
+      label: (
+        <Link to="/family" onClick={() => setMobileMenuVisible(false)}>
+          Family
+        </Link>
+      ),
     },
     {
-      key: "profile",
+      key: 'profile',
       icon: <UserOutlined />,
-      label: <Link to="/profile" onClick={() => setMobileMenuVisible(false)}>Profile</Link>,
+      label: (
+        <Link to="/profile" onClick={() => setMobileMenuVisible(false)}>
+          Profile
+        </Link>
+      ),
     },
   ];
 
   return (
-    <AntLayout style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <AntLayout style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header
         style={{
-          position: "fixed",
+          position: 'fixed',
           zIndex: 1,
-          width: "100%",
-          background: "#fff",
-          padding: "0 20px",
+          width: '100%',
+          background: '#fff',
+          padding: '0 20px',
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", height: "100%", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%',
+            justifyContent: 'space-between',
+          }}
+        >
           <Title level={3} style={{ margin: 0 }}>
             Family Tree
           </Title>
           <div className="desktop-menu">
-            <Menu
-              mode="horizontal"
-              defaultSelectedKeys={["home"]}
-              items={menuItems}
-            />
+            <Menu mode="horizontal" defaultSelectedKeys={['home']} items={menuItems} />
           </div>
           <Button
             className="mobile-menu-button"
             type="text"
             icon={<MenuOutlined />}
             onClick={() => setMobileMenuVisible(true)}
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
           />
         </div>
       </Header>
-      <Content style={{ 
-        padding: "0 20px", 
-        marginTop: 64,
-        marginBottom: 70,
-        flex: "1 0 auto",
-        minHeight: "calc(100vh - 64px - 70px)",
-        overflow: "hidden",
-        position: "relative"
-      }}>
-        <div style={{ padding: "24px", height: "100%" }}>
-          {children}
-        </div>
+      <Content
+        style={{
+          padding: '0 20px',
+          marginTop: 64,
+          marginBottom: 70,
+          flex: '1 0 auto',
+          minHeight: 'calc(100vh - 64px - 70px)',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
+        <div style={{ padding: '24px', height: '100%' }}>{children}</div>
       </Content>
       <Footer
         style={{
-          textAlign: "center",
-          background: "#fff",
-          padding: "16px 20px",
-          borderTop: "1px solid #f0f0f0",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          textAlign: 'center',
+          background: '#fff',
+          padding: '16px 20px',
+          borderTop: '1px solid #f0f0f0',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
           flexShrink: 0,
-          position: "fixed",
+          position: 'fixed',
           bottom: 0,
-          width: "100%",
-          zIndex: 1
+          width: '100%',
+          zIndex: 1,
         }}
       >
         <Space direction="vertical" size="small">
-          <div style={{ color: "#666" }}>
-            Family Tree ©{new Date().getFullYear()}
-          </div>
+          <div style={{ color: '#666' }}>Family Tree ©{new Date().getFullYear()}</div>
         </Space>
         <Space>
           {nodes.length === 0 && (
-            <Button 
-              type="primary" 
-              icon={<PlusOutlined />}
-              onClick={handleAddRootNode}
-            >
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleAddRootNode}>
               Add Root Node
             </Button>
           )}
@@ -135,11 +150,11 @@ export function Layout({ children }: LayoutProps) {
           <DownloadButton containerId="family-tree-container" />
         </Space>
         <div className="footer-links">
-          <a href="/privacy" style={{ color: "#1890ff" }}>
+          <a href="/privacy" style={{ color: '#1890ff' }}>
             Privacy Policy
-          </a>{" "}
-          |{" "}
-          <a href="/terms" style={{ color: "#1890ff" }}>
+          </a>{' '}
+          |{' '}
+          <a href="/terms" style={{ color: '#1890ff' }}>
             Terms of Service
           </a>
         </div>
@@ -154,9 +169,9 @@ export function Layout({ children }: LayoutProps) {
       >
         <Menu
           mode="vertical"
-          defaultSelectedKeys={["home"]}
+          defaultSelectedKeys={['home']}
           items={menuItems}
-          style={{ border: "none" }}
+          style={{ border: 'none' }}
         />
       </Drawer>
 

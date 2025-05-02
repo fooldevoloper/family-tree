@@ -1,14 +1,14 @@
-import { ImportOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Dropdown, Input, MenuProps, message, Modal, Space, Typography } from "antd";
-import { useState } from "react";
-import useFamilyStore from "../store/familyStore";
+import { ImportOutlined, UploadOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Input, MenuProps, message, Modal, Space, Typography } from 'antd';
+import { useState } from 'react';
+import useFamilyStore from '../store/familyStore';
 
 const { TextArea } = Input;
 const { Text } = Typography;
 
 export function ImportButton() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [jsonInput, setJsonInput] = useState("");
+  const [jsonInput, setJsonInput] = useState('');
   const [messageApi, contextHolder] = message.useMessage();
   const importJson = useFamilyStore((state) => state.importJson);
   const nodes = useFamilyStore((state) => state.nodes);
@@ -36,16 +36,16 @@ export function ImportButton() {
     setIsModalOpen(false);
   };
 
-  const items: MenuProps["items"] = [
+  const items: MenuProps['items'] = [
     {
-      key: "paste",
-      label: "Paste JSON",
+      key: 'paste',
+      label: 'Paste JSON',
       icon: <ImportOutlined />,
       onClick: showModal,
     },
     {
-      key: "upload",
-      label: "Upload File",
+      key: 'upload',
+      label: 'Upload File',
       icon: <UploadOutlined />,
       onClick: () => {
         // TODO: Implement file upload functionality
@@ -75,11 +75,11 @@ export function ImportButton() {
         width={800}
         okText="Import"
         cancelText="Cancel"
-        okButtonProps={{ type: "primary" }}
-        bodyStyle={{ padding: "24px" }}
+        okButtonProps={{ type: 'primary' }}
+        bodyStyle={{ padding: '24px' }}
       >
         <div style={{ marginBottom: 16 }}>
-          <Text type="secondary" style={{ display: "block", marginBottom: 16 }}>
+          <Text type="secondary" style={{ display: 'block', marginBottom: 16 }}>
             Paste your family tree JSON data below or edit the current tree structure:
           </Text>
           <TextArea
@@ -87,25 +87,27 @@ export function ImportButton() {
             value={jsonInput}
             onChange={(e) => setJsonInput(e.target.value)}
             placeholder='{"nodes": [...], "edges": [...]}'
-            style={{ 
-              fontFamily: "monospace",
-              fontSize: "14px",
-              borderRadius: "8px",
-              border: "1px solid #d9d9d9",
-              padding: "12px",
+            style={{
+              fontFamily: 'monospace',
+              fontSize: '14px',
+              borderRadius: '8px',
+              border: '1px solid #d9d9d9',
+              padding: '12px',
             }}
           />
-          <Text type="secondary" style={{ display: "block", marginTop: 16 }}>
+          <Text type="secondary" style={{ display: 'block', marginTop: 16 }}>
             The JSON should follow this structure:
           </Text>
-          <pre style={{ 
-            background: "#f5f5f5", 
-            padding: "12px", 
-            borderRadius: "8px",
-            marginTop: "8px",
-            fontSize: "12px",
-            overflow: "auto"
-          }}>
+          <pre
+            style={{
+              background: '#f5f5f5',
+              padding: '12px',
+              borderRadius: '8px',
+              marginTop: '8px',
+              fontSize: '12px',
+              overflow: 'auto',
+            }}
+          >
             {`{
   "nodes": [
     {
@@ -134,4 +136,4 @@ export function ImportButton() {
       </Modal>
     </>
   );
-} 
+}

@@ -1,4 +1,4 @@
-import { Node } from "@xyflow/react";
+import { Node } from '@xyflow/react';
 
 export interface NodeData {
   label: string;

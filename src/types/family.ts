@@ -1,6 +1,6 @@
-import { Connection, Edge, EdgeChange, Node, NodeChange } from "@xyflow/react";
+import { Connection, Edge, EdgeChange, Node, NodeChange } from '@xyflow/react';
 
-export type FamilyNodeType = "parent" | "spouse" | "child" | "thread";
+export type FamilyNodeType = 'parent' | 'spouse' | 'child' | 'thread';
 
 export interface NodeData {
   id: string;
@@ -24,9 +24,7 @@ export interface FamilyStore {
   edges: Edge[];
 
   // Actions
-  setNodes: (
-    nodes: FamilyNode[] | ((nds: FamilyNode[]) => FamilyNode[])
-  ) => void;
+  setNodes: (nodes: FamilyNode[] | ((nds: FamilyNode[]) => FamilyNode[])) => void;
   setEdges: (edges: Edge[] | ((eds: Edge[]) => Edge[])) => void;
 
   // CRUD Operations
@@ -35,7 +33,7 @@ export interface FamilyStore {
   deleteNode: (nodeId: string) => void;
   addEdge: (edge: Edge) => void;
   deleteEdge: (edgeId: string) => void;
-  
+
   // Import/Export Operations
   importJson: (jsonData: string | { nodes: FamilyNode[]; edges: Edge[] }) => void;
 }

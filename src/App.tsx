@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   addEdge,
   applyEdgeChanges,
@@ -11,16 +11,16 @@ import {
   OnNodesChange,
   ReactFlow,
   ReactFlowInstance,
-} from "@xyflow/react";
-import { ConfigProvider, theme } from "antd";
-import { useCallback, useEffect, useRef } from "react";
-import { BrowserRouter } from "react-router-dom";
-import { Layout } from "./components/Layout";
-import ChildNode from "./nodes/ChildNode";
-import ParentNode from "./nodes/ParentNode";
-import SpouseNode from "./nodes/SpouseNode";
-import useFamilyStore from "./store/familyStore";
-import { FamilyNode } from "./types/family";
+} from '@xyflow/react';
+import { ConfigProvider, theme } from 'antd';
+import { useCallback, useEffect, useRef } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { Layout } from './components/Layout';
+import ChildNode from './nodes/ChildNode';
+import ParentNode from './nodes/ParentNode';
+import SpouseNode from './nodes/SpouseNode';
+import useFamilyStore from './store/familyStore';
+import { FamilyNode } from './types/family';
 
 const nodeTypes: NodeTypes = {
   parent: ParentNode,
@@ -42,7 +42,7 @@ function FamilyTree() {
 
       setNodes((nds) =>
         nds.map((node) =>
-          node.id === "root-parent"
+          node.id === 'root-parent'
             ? {
                 ...node,
                 position: { x: centeredX, y: centeredY },
@@ -72,9 +72,7 @@ function FamilyTree() {
 
   const onNodesChange = useCallback<OnNodesChange>(
     (changes) => {
-      setNodes(
-        (nds: FamilyNode[]) => applyNodeChanges(changes, nds) as FamilyNode[]
-      );
+      setNodes((nds: FamilyNode[]) => applyNodeChanges(changes, nds) as FamilyNode[]);
     },
     [setNodes]
   );
@@ -102,21 +100,21 @@ function FamilyTree() {
       theme={{
         algorithm: theme.defaultAlgorithm,
         token: {
-          colorPrimary: "#1890ff",
+          colorPrimary: '#1890ff',
           borderRadius: 8,
         },
       }}
     >
       <Layout>
         <div
-          style={{ 
-            width: "100%", 
-            height: "100%",
-            position: "absolute",
+          style={{
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
             top: 0,
             left: 0,
             right: 0,
-            bottom: 0
+            bottom: 0,
           }}
           id="family-tree-container"
         >
@@ -131,7 +129,7 @@ function FamilyTree() {
             fitView
             defaultEdgeOptions={{
               style: { stroke: '#52c41a' },
-              animated: true
+              animated: true,
             }}
           >
             <Background />
