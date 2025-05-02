@@ -266,7 +266,7 @@ export const RootNode: React.FC<RootNodeProps> = ({
         position: "relative",
         transition: "all 0.3s ease",
       }}
-      bodyStyle={{ padding: "8px" }}
+      styles={{ body: { padding: "8px" } }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       role="treeitem"
