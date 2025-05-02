@@ -1,4 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { Handle, Position } from "@xyflow/react";
 import { Button, Card } from "antd";
 import { useState } from "react";
@@ -15,7 +15,11 @@ function ChildNode({
   isConnectable?: boolean;
 }) {
   const [isHovered, setIsHovered] = useState(false);
-  const { addNode, addEdge, nodes } = useFamilyStore();
+  const { addNode, addEdge, nodes, deleteNode } = useFamilyStore();
+
+  const handleDelete = () => {
+    deleteNode(data.id);
+  };
 
   const handleAddSpouse = () => {
     const newNode = {
@@ -142,6 +146,29 @@ function ChildNode({
         style={{ background: "#52c41a" }}
       />
       <NodeContent data={data} borderColor="#52c41a" />
+      {isHovered && (
+        <Button
+          type="primary"
+          shape="circle"
+          icon={<CloseOutlined />}
+          size="small"
+          onClick={handleDelete}
+          style={{
+            position: "absolute",
+            right: "-12px",
+            top: "-12px",
+            zIndex: 1,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            background: "#ff4d4f",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "24px",
+            height: "24px",
+          }}
+        />
+      )}
       {isHovered && data.canAddSpouse && (
         <Button
           type="primary"
