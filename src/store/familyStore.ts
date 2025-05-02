@@ -79,10 +79,34 @@ const useFamilyStore = create<FamilyStoreState>((set) => ({
 
   deleteNode: (nodeId) =>
     set((state) => {
-      const newNodes = state.nodes.filter((node) => node.id !== nodeId);
-      const newEdges = state.edges.filter(
-        (edge) => edge.source !== nodeId && edge.target !== nodeId
+      // Function to recursively find all child node IDs
+      const findChildNodeIds = (parentId: string): string[] => {
+        const directChildren = state.nodes.filter(
+          (node) => node.data.parentId === parentId
+        );
+        const childIds = directChildren.map((child) => child.id);
+        const grandChildIds = directChildren.flatMap((child) =>
+          findChildNodeIds(child.id)
+        );
+        return [...childIds, ...grandChildIds];
+      };
+
+      // Get all child node IDs to delete
+      const childNodeIds = findChildNodeIds(nodeId);
+      const allNodeIdsToDelete = [nodeId, ...childNodeIds];
+
+      // Filter out all nodes to be deleted
+      const newNodes = state.nodes.filter(
+        (node) => !allNodeIdsToDelete.includes(node.id)
       );
+
+      // Filter out all edges connected to deleted nodes
+      const newEdges = state.edges.filter(
+        (edge) =>
+          !allNodeIdsToDelete.includes(edge.source) &&
+          !allNodeIdsToDelete.includes(edge.target)
+      );
+
       const newState = { ...state, nodes: newNodes, edges: newEdges };
       saveState(newState);
       return { nodes: newNodes, edges: newEdges };
