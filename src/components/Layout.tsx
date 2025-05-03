@@ -1,15 +1,16 @@
 import {
-  HomeOutlined,
-  MenuOutlined,
-  PlusOutlined,
-  TeamOutlined,
-  UserOutlined,
+    HomeOutlined,
+    MenuOutlined,
+    PlusOutlined,
+    TeamOutlined,
+    UserOutlined,
 } from '@ant-design/icons';
 import { Layout as AntLayout, Button, Drawer, Menu, Space, Typography } from 'antd';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useFamilyStore from '../store/familyStore';
 import { DownloadButton } from './DownloadButton';
+import ExportButton from './ExportButton';
 import { ImportButton } from './ImportButton';
 
 const { Header, Content, Footer } = AntLayout;
@@ -147,6 +148,7 @@ export function Layout({ children }: LayoutProps) {
             </Button>
           )}
           <ImportButton />
+          <ExportButton />
           <DownloadButton containerId="family-tree-container" />
         </Space>
         <div className="footer-links">

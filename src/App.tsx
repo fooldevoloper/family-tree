@@ -14,7 +14,7 @@ import {
 } from '@xyflow/react';
 import { ConfigProvider, theme } from 'antd';
 import { useCallback, useEffect, useRef } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ResizeButton } from './components/ResizeButton';
 import ChildNode from './nodes/ChildNode';
@@ -130,10 +130,21 @@ function FamilyTree() {
   );
 }
 
+// Create router with future flags
+const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: <FamilyTree />,
+    },
+  ],
+  {
+    future: {
+      v7_startTransition: true,
+    } as any, // Type assertion to handle future flags
+  }
+);
+
 export default function App() {
-  return (
-    <BrowserRouter>
-      <FamilyTree />
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 }

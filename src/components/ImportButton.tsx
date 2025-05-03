@@ -76,7 +76,7 @@ export function ImportButton() {
         okText="Import"
         cancelText="Cancel"
         okButtonProps={{ type: 'primary' }}
-        bodyStyle={{ padding: '24px' }}
+        styles={{ body: { padding: '24px' } }}
       >
         <div style={{ marginBottom: 16 }}>
           <Text type="secondary" style={{ display: 'block', marginBottom: 16 }}>

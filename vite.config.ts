@@ -8,4 +8,17 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
   },
+  define: {
+    'process.env': {},
+    global: 'globalThis',
+    browser: 'globalThis',
+  },
+  optimizeDeps: {
+    include: ['@xyflow/react'],
+  },
+  server: {
+    fs: {
+      strict: false,
+    },
+  },
 });

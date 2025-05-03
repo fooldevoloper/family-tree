@@ -98,6 +98,7 @@ export const RootNode: React.FC<RootNodeProps> = ({
 
   const handleDelete = async () => {
     try {
+      console.log('Deleting node:', data);
       setIsLoading(true);
       await deleteNode(data.id);
     } catch (error) {

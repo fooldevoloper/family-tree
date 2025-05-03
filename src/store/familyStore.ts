@@ -3,6 +3,8 @@ import { create } from 'zustand';
 import { FamilyNode, FamilyStoreState } from '../types/family';
 
 const useFamilyStore = create<FamilyStoreState>((set) => ({
+  // nodes: defaultFamilyData.nodes,
+  // edges: defaultFamilyData.edges,
   nodes: [],
   edges: [],
 
@@ -39,35 +41,23 @@ const useFamilyStore = create<FamilyStoreState>((set) => ({
 
   deleteNode: (nodeId) =>
     set((state) => {
-      // Function to recursively find all child node IDs
-      const findChildNodeIds = (parentId: string): string[] => {
-        const directChildren = state.nodes.filter((node) => node.data.parentId === parentId);
-        const childIds = directChildren.map((child) => child.id);
-        const grandChildIds = directChildren.flatMap((child) => findChildNodeIds(child.id));
-        return [...childIds, ...grandChildIds];
-      };
+      // Find the node by id or data.id
+      const nodeToDelete = state.nodes.find(
+        node => node.id === nodeId || node.data.id === nodeId
+      );
 
-      // Find connected spouse nodes through edges
-      const findSpouseNodeIds = (nodeId: string): string[] => {
-        const spouseEdges = state.edges.filter(
-          (edge) => (edge.source === nodeId || edge.target === nodeId) && edge.type === 'straight' // Assuming straight edges are spouse connections
-        );
-        return spouseEdges.map((edge) => (edge.source === nodeId ? edge.target : edge.source));
-      };
+      if (!nodeToDelete) {
+        return state;
+      }
 
-      // Get all child node IDs to delete
-      const childNodeIds = findChildNodeIds(nodeId);
-      // Get all spouse node IDs to delete
-      const spouseNodeIds = findSpouseNodeIds(nodeId);
-      const allNodeIdsToDelete = [nodeId, ...childNodeIds, ...spouseNodeIds];
+      // Remove only the selected node
+      const newNodes = state.nodes.filter(
+        node => node.id !== nodeToDelete.id
+      );
 
-      // Filter out all nodes to be deleted
-      const newNodes = state.nodes.filter((node) => !allNodeIdsToDelete.includes(node.id));
-
-      // Filter out all edges connected to deleted nodes
+      // Remove any edges connected to this node
       const newEdges = state.edges.filter(
-        (edge) =>
-          !allNodeIdsToDelete.includes(edge.source) && !allNodeIdsToDelete.includes(edge.target)
+        edge => edge.source !== nodeToDelete.id && edge.target !== nodeToDelete.id
       );
 
       return { nodes: newNodes, edges: newEdges };
