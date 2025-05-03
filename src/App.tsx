@@ -16,6 +16,7 @@ import { ConfigProvider, theme } from 'antd';
 import { useCallback, useEffect, useRef } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Layout } from './components/Layout';
+import { ResizeButton } from './components/ResizeButton';
 import ChildNode from './nodes/ChildNode';
 import ParentNode from './nodes/ParentNode';
 import SpouseNode from './nodes/SpouseNode';
@@ -56,19 +57,6 @@ function FamilyTree() {
       );
     }
   }, [nodes.length, setNodes]);
-
-  // Add effect to handle automatic zooming and centering
-  useEffect(() => {
-    if (reactFlowInstance.current) {
-      // Add a small delay to ensure the nodes are rendered
-      setTimeout(() => {
-        reactFlowInstance.current?.fitView({
-          padding: 0.2, // Add some padding around the content
-          duration: 800, // Smooth animation duration
-        });
-      }, 100);
-    }
-  }, [nodes, edges]);
 
   const onNodesChange = useCallback<OnNodesChange>(
     (changes) => {
@@ -126,7 +114,6 @@ function FamilyTree() {
             onConnect={onConnect}
             nodeTypes={nodeTypes}
             onInit={onInit}
-            fitView
             defaultEdgeOptions={{
               style: { stroke: '#52c41a' },
               animated: true,
@@ -134,6 +121,9 @@ function FamilyTree() {
           >
             <Background />
           </ReactFlow>
+          <div style={{ position: 'absolute', top: 20, right: 20, zIndex: 5 }}>
+            <ResizeButton reactFlowInstance={reactFlowInstance} />
+          </div>
         </div>
       </Layout>
     </ConfigProvider>
