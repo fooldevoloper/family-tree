@@ -1,6 +1,6 @@
 # Family Tree
 
-A modern family tree visualization application built with React and TypeScript/React Flow
+A modern family tree visualization application built with React and TypeScript / React Flow
 
 ## Features
 
