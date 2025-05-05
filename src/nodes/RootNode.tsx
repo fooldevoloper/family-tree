@@ -12,8 +12,6 @@ interface RootNodeProps {
   isConnectable?: boolean;
   children?: React.ReactNode;
   borderColor?: string;
-  onAddSpouse?: () => void;
-  onAddChild?: () => void;
   showSpouseButton?: boolean;
   showChildButton?: boolean;
   isSpouse?: boolean;
@@ -86,8 +84,6 @@ export const RootNode: React.FC<RootNodeProps> = ({
   isConnectable,
   children,
   borderColor = '#1890ff',
-  onAddSpouse,
-  onAddChild,
   showSpouseButton = true,
   showChildButton = false,
   isSpouse = false,
@@ -109,11 +105,6 @@ export const RootNode: React.FC<RootNodeProps> = ({
   };
 
   const handleAddSpouse = async () => {
-    if (onAddSpouse) {
-      onAddSpouse();
-      return;
-    }
-
     try {
       setIsLoading(true);
       const newNode = {
@@ -153,11 +144,6 @@ export const RootNode: React.FC<RootNodeProps> = ({
   };
 
   const handleAddChild = async () => {
-    if (onAddChild) {
-      onAddChild();
-      return;
-    }
-
     try {
       setIsLoading(true);
       const spouseNode = nodes.find(

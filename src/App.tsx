@@ -45,13 +45,13 @@ function FamilyTree() {
         nds.map((node) =>
           node.id === 'root-parent'
             ? {
-                ...node,
+              ...node,
+              position: { x: centeredX, y: centeredY },
+              data: {
+                ...node.data,
                 position: { x: centeredX, y: centeredY },
-                data: {
-                  ...node.data,
-                  position: { x: centeredX, y: centeredY },
-                },
-              }
+              },
+            }
             : node
         )
       );
