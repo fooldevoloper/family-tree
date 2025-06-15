@@ -13,7 +13,6 @@ import {
     PlayCircleOutlined,
     ArrowRightOutlined,
 } from "@ant-design/icons"
-import Navbar from './Navbar';
 import Footer from './Footer';
 
 const { Title, Paragraph, Text } = Typography
