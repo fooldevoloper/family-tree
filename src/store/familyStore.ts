@@ -1,12 +1,13 @@
 import { Edge } from '@xyflow/react';
 import { create } from 'zustand';
 import { FamilyNode, FamilyStoreState } from '../types/family';
+import { defaultFamilyData } from '../data/defaultFamilyData';
 
 const useFamilyStore = create<FamilyStoreState>((set) => ({
-  // nodes: defaultFamilyData.nodes,
-  // edges: defaultFamilyData.edges,
-  nodes: [],
-  edges: [],
+  nodes: defaultFamilyData.nodes,
+  edges: defaultFamilyData.edges,
+  // nodes: [],
+  // edges: [],
 
   setNodes: (nodes) =>
     set((state) => {
