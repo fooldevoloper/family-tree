@@ -1,6 +1,6 @@
 import { ImportOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Input, MenuProps, message, Modal, Space, Typography } from 'antd';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import useFamilyStore from '../store/familyStore';
 
 const { TextArea } = Input;
@@ -13,6 +13,8 @@ export function ImportButton() {
   const importJson = useFamilyStore((state) => state.importJson);
   const nodes = useFamilyStore((state) => state.nodes);
   const edges = useFamilyStore((state) => state.edges);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { setNodes, setEdges } = useFamilyStore();
 
   const showModal = () => {
     // Pre-fill the textarea with current tree data if available
@@ -34,6 +36,30 @@ export function ImportButton() {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target?.result as string);
+        if (data.nodes && data.edges) {
+          setNodes(data.nodes);
+          setEdges(data.edges);
+          messageApi.success('Family tree imported successfully!');
+        } else {
+          console.error('Invalid file format.');
+          messageApi.error('Invalid file format. Please upload a valid JSON file.');
+        }
+      } catch (error) {
+        console.error('Error parsing file:', error);
+        messageApi.error('Error parsing file. Please ensure the file is a valid JSON.');
+      }
+    };
+    reader.readAsText(file);
   };
 
   const items: MenuProps['items'] = [
@@ -134,6 +160,13 @@ export function ImportButton() {
           </pre>
         </div>
       </Modal>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        accept="application/json"
+        onChange={handleImport}
+      />
     </>
   );
 }

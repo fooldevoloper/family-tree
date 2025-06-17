@@ -119,6 +119,26 @@ export function DownloadButton({ containerId }: DownloadButtonProps) {
     }
   }, [containerId, messageApi]);
 
+  const handleDownload = useCallback(() => {
+    const container = document.getElementById(containerId);
+    if (!container) {
+      console.error(`Container with id "${containerId}" not found.`);
+      return;
+    }
+
+    // Convert the container to an image or data format
+    toPng(container as HTMLElement)
+      .then((dataUrl) => {
+        const link = document.createElement('a');
+        link.download = 'family-tree.png';
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((error) => {
+        console.error('Error generating image:', error);
+      });
+  }, [containerId]);
+
   const items: MenuProps['items'] = [
     {
       key: 'jpeg',
@@ -144,7 +164,12 @@ export function DownloadButton({ containerId }: DownloadButtonProps) {
     <>
       {contextHolder}
       <Dropdown menu={{ items }} placement="topRight">
-        <Button type="primary" icon={<DownloadOutlined />} loading={loading}>
+        <Button
+          type="primary"
+          icon={<DownloadOutlined />}
+          loading={loading}
+          onClick={handleDownload}
+        >
           Download
         </Button>
       </Dropdown>
