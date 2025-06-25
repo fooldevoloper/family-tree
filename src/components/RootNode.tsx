@@ -24,6 +24,8 @@ const RootNode = ({ id, data }: RootNodeProps) => {
         position: { x: 0, y: 100 },
         parentId: id,
         label: '',
+      imageUrl:"https://upload.wikimedia.org/wikipedia/commons/5/59/User-avatar.svg"
+
       },
     };
 
@@ -34,6 +36,7 @@ const RootNode = ({ id, data }: RootNodeProps) => {
       type: 'smoothstep',
       sourceHandle: 'bottom',
       targetHandle: 'top',
+
     };
 
     addNode(childNode);
