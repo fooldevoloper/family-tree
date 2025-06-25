@@ -107,7 +107,7 @@ export function DownloadButton({ containerId,isFullscreen }: DownloadButtonProps
         format: [element.clientWidth, element.clientHeight],
       });
 
-      pdf.addImage(dataUrl, 'JPEG', 0, 0, element.clientWidth, element.clientHeight);
+      pdf.addImage(dataUrl,  'JPEG', 0, 0, element.clientWidth, element.clientHeight);
 
       // Update success message
       messageApi.success({ content: 'PDF ready!', key: 'download', duration: 2 });

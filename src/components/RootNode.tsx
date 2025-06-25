@@ -52,6 +52,8 @@ const RootNode = ({ id, data }: RootNodeProps) => {
         position: { x: 100, y: 0 },
         parentId: id,
         label: '',
+        imageUrl:"https://upload.wikimedia.org/wikipedia/commons/5/59/User-avatar.svg"
+
       },
     };
 
