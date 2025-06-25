@@ -1,9 +1,6 @@
 import {
-  DownloadOutlined,
-  ExportOutlined,
   FullscreenExitOutlined,
   FullscreenOutlined,
-  ImportOutlined,
   PlusOutlined,
   RedoOutlined,
 } from '@ant-design/icons';
@@ -32,6 +29,9 @@ import ParentNode from '../nodes/ParentNode';
 import SpouseNode from '../nodes/SpouseNode';
 import useFamilyStore from '../store/familyStore';
 import { FamilyNode } from '../types/family';
+import { DownloadButton } from '../components/DownloadButton';
+import { ImportButton } from '../components/ImportButton';
+import ExportButton from '../components/ExportButton';
 
 const { Title, Paragraph } = Typography;
 
@@ -40,6 +40,7 @@ const nodeTypes: NodeTypes = {
   child: ChildNode,
   spouse: SpouseNode,
 };
+export const buttonStyle = { fontSize: '1rem', padding: '8px 16px' };
 
 export default function FamilyTreePage() {
   const { nodes, edges, setNodes, setEdges, addNode } = useFamilyStore();
@@ -112,6 +113,7 @@ export default function FamilyTreePage() {
         name: 'Root Person',
         label: 'Root',
         position: { x: 0, y: 0 },
+        imageUrl:"https://upload.wikimedia.org/wikipedia/commons/5/59/User-avatar.svg"
       },
     });
   };
@@ -134,7 +136,6 @@ export default function FamilyTreePage() {
     }
   };
 
-  const buttonStyle = { fontSize: '1rem', padding: '8px 16px' };
 
   return (
     <div
@@ -195,6 +196,7 @@ export default function FamilyTreePage() {
             <ResizeButton ref={resizeRef} reactFlowInstance={reactFlowInstance} />
           </div>
           <div
+          id='family-tree-container'
             style={{
               width: '100%',
               height: isFullscreen ? 'calc(100% - 80px)' : 500,
@@ -269,33 +271,10 @@ export default function FamilyTreePage() {
             >
               Reset Canvas
             </Button>
-            <Button
-              type="primary"
-              size="large"
-              style={buttonStyle}
-              icon={<DownloadOutlined />}
-              onClick={() => console.log('Download triggered')}
-            >
-              Download
-            </Button>
-            <Button
-              type="primary"
-              size="large"
-              style={buttonStyle}
-              icon={<ImportOutlined />}
-              onClick={() => console.log('Import triggered')}
-            >
-              Import
-            </Button>
-            <Button
-              type="primary"
-              size="large"
-              style={buttonStyle}
-              icon={<ExportOutlined />}
-              onClick={() => console.log('Export triggered')}
-            >
-              Export
-            </Button>
+          <DownloadButton isFullscreen={isFullscreen}  containerId='family-tree-container' />
+            <ImportButton  isFullscreen={isFullscreen}  />
+            <ExportButton isFullscreen={isFullscreen} />
+          
             <Button
               type="primary"
               size="large"
@@ -340,27 +319,9 @@ export default function FamilyTreePage() {
               style={buttonStyle}
               icon={<RedoOutlined />}
             />
-            <Button
-              type="primary"
-              size="large"
-              style={buttonStyle}
-              icon={<DownloadOutlined />}
-              onClick={() => console.log('Download triggered')}
-            />
-            <Button
-              type="primary"
-              size="large"
-              style={buttonStyle}
-              icon={<ImportOutlined />}
-              onClick={() => console.log('Import triggered')}
-            />
-            <Button
-              type="primary"
-              size="large"
-              style={buttonStyle}
-              icon={<ExportOutlined />}
-              onClick={() => console.log('Export triggered')}
-            />
+              <DownloadButton isFullscreen={isFullscreen}  containerId='family-tree-container' />
+            <ImportButton  isFullscreen={isFullscreen}  />
+            <ExportButton isFullscreen={isFullscreen} />
             <Button
               type="primary"
               size="large"

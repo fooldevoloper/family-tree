@@ -1,8 +1,14 @@
 import { Button } from 'antd';
 import { saveAs } from 'file-saver'; // Import file-saver for exporting files
 import useFamilyStore from '../store/familyStore';
+import { buttonStyle } from '../pages/FamilyTreePage';
+import { ExportOutlined } from '@ant-design/icons';
 
-const ExportButton: React.FC = () => {
+interface ExportButtonProps {
+  isFullscreen: boolean;
+}
+
+const ExportButton: React.FC<ExportButtonProps> = ({ isFullscreen }) => {
   const { nodes, edges } = useFamilyStore();
 
   const handleExport = () => {
@@ -12,8 +18,9 @@ const ExportButton: React.FC = () => {
   };
 
   return (
-    <Button type="primary" onClick={handleExport}>
-      Export
+    <Button type="primary" style={buttonStyle} size='large' icon={<ExportOutlined />} onClick={handleExport}>
+                   {!isFullscreen  && "Export"}
+
     </Button>
   );
 };

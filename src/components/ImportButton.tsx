@@ -2,11 +2,16 @@ import { ImportOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Input, MenuProps, message, Modal, Space, Typography } from 'antd';
 import { useRef, useState } from 'react';
 import useFamilyStore from '../store/familyStore';
+import { buttonStyle } from '../pages/FamilyTreePage';
 
 const { TextArea } = Input;
 const { Text } = Typography;
 
-export function ImportButton() {
+interface ImportButtonProps {
+  isFullscreen: boolean;
+}
+
+export function ImportButton({ isFullscreen }: ImportButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [jsonInput, setJsonInput] = useState('');
   const [messageApi, contextHolder] = message.useMessage();
@@ -84,8 +89,8 @@ export function ImportButton() {
     <>
       {contextHolder}
       <Dropdown menu={{ items }} placement="topRight">
-        <Button type="primary" icon={<ImportOutlined />}>
-          Import
+        <Button type="primary" style={buttonStyle}  size='large' icon={<ImportOutlined />}>
+             {!isFullscreen  && "Import"}
         </Button>
       </Dropdown>
       <Modal

@@ -3,12 +3,14 @@ import { Button, Dropdown, MenuProps, Modal, message } from 'antd';
 import { toJpeg, toPng } from 'html-to-image';
 import { jsPDF } from 'jspdf';
 import { useCallback, useState } from 'react';
+import { buttonStyle } from '../pages/FamilyTreePage';
 
 interface DownloadButtonProps {
   containerId: string;
+  isFullscreen:boolean
 }
 
-export function DownloadButton({ containerId }: DownloadButtonProps) {
+export function DownloadButton({ containerId,isFullscreen }: DownloadButtonProps) {
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -119,25 +121,25 @@ export function DownloadButton({ containerId }: DownloadButtonProps) {
     }
   }, [containerId, messageApi]);
 
-  const handleDownload = useCallback(() => {
-    const container = document.getElementById(containerId);
-    if (!container) {
-      console.error(`Container with id "${containerId}" not found.`);
-      return;
-    }
+  // const handleDownload = useCallback(() => {
+  //   const container = document.getElementById(containerId);
+  //   if (!container) {
+  //     console.error(`Container with id "${containerId}" not found.`);
+  //     return;
+  //   }
 
-    // Convert the container to an image or data format
-    toPng(container as HTMLElement)
-      .then((dataUrl) => {
-        const link = document.createElement('a');
-        link.download = 'family-tree.png';
-        link.href = dataUrl;
-        link.click();
-      })
-      .catch((error) => {
-        console.error('Error generating image:', error);
-      });
-  }, [containerId]);
+  //   // Convert the container to an image or data format
+  //   toPng(container as HTMLElement)
+  //     .then((dataUrl) => {
+  //       const link = document.createElement('a');
+  //       link.download = 'family-tree.png';
+  //       link.href = dataUrl;
+  //       link.click();
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error generating image:', error);
+  //     });
+  // }, [containerId]);
 
   const items: MenuProps['items'] = [
     {
@@ -168,9 +170,11 @@ export function DownloadButton({ containerId }: DownloadButtonProps) {
           type="primary"
           icon={<DownloadOutlined />}
           loading={loading}
-          onClick={handleDownload}
+          size='large'
+          style={buttonStyle}
+          // onClick={handleDownload}
         >
-          Download
+          {!isFullscreen  && "Download"}
         </Button>
       </Dropdown>
     </>

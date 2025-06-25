@@ -1,9 +1,9 @@
 import {
-    HomeOutlined,
-    MenuOutlined,
-    PlusOutlined,
-    TeamOutlined,
-    UserOutlined,
+  HomeOutlined,
+  MenuOutlined,
+  PlusOutlined,
+  TeamOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import { Layout as AntLayout, Button, Drawer, Menu, Space, Typography } from 'antd';
 import { useState } from 'react';
